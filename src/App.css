@@ -15,7 +15,8 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 15vh;
+  margin-bottom: 4vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,4 +36,28 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.App-button {
+  margin: 1em;
+}
+
+
+.BuyComponent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+  width : 65vw;
+  margin : auto;
+}
+
+.BuyComponentInput {
+  margin-bottom : 1em;
+  width : 55vw;
+}
+
+.BuyComponentButton {
+  margin-bottom : 1em;
+  width : 55vw;
 }
