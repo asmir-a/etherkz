@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 import {ethers} from "ethers";
-import abi from './abi.json';
 import nftItemABI from './abis/nft_item_abi.json';
 import nftMarketplaceABI from './abis/nft_marketplace_abi.json';
 import { Card, Button} from 'react-bootstrap';
