@@ -67,7 +67,7 @@ function ProductPutComponent() {
         placeholder = "Set Price"
         value = {price}
       />
-      <Button className = "BuyComponentButton" onClick = {createTokenAndListItem}>Put Your Item!</Button>
+      <Button variant="success" className = "BuyComponentButton" onClick = {createTokenAndListItem}>Put Your Item!</Button>
     </Card>
   )
 }
@@ -129,8 +129,8 @@ function MarketGallery() {
   return (
     <div>
       <h2>Market Gallery</h2>
-      <Button style = {{margin : "2rem", width : "10vw"}} onClick = {getMyItems}>My Items</Button>
-      <Button style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Selling Items</Button>
+      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMyItems}>My Items</Button>
+      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Selling Items</Button>
       <div className = "MarketGallery">
         {items && items.map((item) => 
           myItemsSelected ? <MyItemCard item = {item}/> : <MarketItemCard item = {item}/>
@@ -181,7 +181,7 @@ function MarketItemCard(props) {
               <Card.Text>
                 URI : {uri}
               </Card.Text>
-              <Button onClick = {() => {buyButtonHandler(props.item.itemId)}}>Buy!</Button>
+              <Button variant="success" onClick = {() => {buyButtonHandler(props.item.itemId)}}>Buy!</Button>
             </Card.Body>
       </Card>}
     </div>
