@@ -54,7 +54,7 @@ function ProductPutComponent() {
 
   return (
     <Card className = "BuyComponent">
-      <Card.Title>Place you item for SALE!</Card.Title>
+      <Card.Title>Выстовите на продажу!</Card.Title>
       <input
         className = "BuyComponentInput" 
         onChange = {e => setUriValue(e.target.value)}
@@ -67,7 +67,7 @@ function ProductPutComponent() {
         placeholder = "Set Price"
         value = {price}
       />
-      <Button variant="success" className = "BuyComponentButton" onClick = {createTokenAndListItem}>Put Your Item!</Button>
+      <Button variant="success" className = "BuyComponentButton" onClick = {createTokenAndListItem}>Выстовить</Button>
     </Card>
   )
 }
@@ -128,9 +128,9 @@ function MarketGallery() {
 
   return (
     <div>
-      <h2>Market Gallery</h2>
-      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMyItems}>My Items</Button>
-      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Selling Items</Button>
+      <h2 style = {{color : "white"}}>Маркетная Галерея</h2>
+      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMyItems}>Мои Активы</Button>
+      <Button variant="success" style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Другие Активы</Button>
       <div className = "MarketGallery">
         {items && items.map((item) => 
           myItemsSelected ? <MyItemCard item = {item}/> : <MarketItemCard item = {item}/>
@@ -166,17 +166,17 @@ function MarketItemCard(props) {
   return (
     <div>
       {uri && 
-        <Card style = {{width : "18rem", margin : "2rem"}}>
+        <Card style = {{width : "18rem", margin : "1rem"}}>
             <Card.Img src = {uri}/>
             <Card.Body>
               <Card.Text>
-                Item ID : {props.item.itemId}
+                ID : {props.item.itemId}
               </Card.Text>
               <Card.Text>
-                Price : {props.item.price} wei
+                Цена : {props.item.price} wei
               </Card.Text>
               <Card.Text>
-                Seller : {props.item.seller}
+                Адресс Продовца : {props.item.seller}
               </Card.Text>
               <Card.Text>
                 URI : {uri}
@@ -218,7 +218,7 @@ function MyItemCard(props) {
             <Card.Img src = {uri}/>
             <Card.Body>
               <Card.Text>
-                Item ID : {props.item.itemId}
+                ID : {props.item.itemId}
               </Card.Text>
               <Card.Text>
                 URI : {uri}
@@ -254,9 +254,9 @@ function App() {
   return (
     <div className="App">
       <header className = "App-header">
-        <h3>Your Account Address: </h3>
+        <h3>Адресс Вашего Аккаунта: </h3>
         {account && <div>{account.account}</div>}
-        <h3>Your Account Balance: </h3>
+        <h3>Баланс На Вашем Аккаунте: </h3>
         {account && <div>{account.balance}</div>}
       </header>
       <ProductPutComponent />
