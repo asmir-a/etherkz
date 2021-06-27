@@ -54,7 +54,7 @@ function ProductPutComponent() {
 
 
   return (
-    <div className = "BuyComponent">
+    <Card className = "BuyComponent">
       <input
         className = "BuyComponentInput" 
         onChange = {e => setUriValue(e.target.value)}
@@ -67,8 +67,8 @@ function ProductPutComponent() {
         placeholder = "Set Price"
         value = {price}
       />
-      <button className = "BuyComponentButton" onClick = {createTokenAndListItem}>Put Your Item!</button>
-    </div>
+      <Button className = "BuyComponentButton" onClick = {createTokenAndListItem}>Put Your Item!</Button>
+    </Card>
   )
 }
 
@@ -104,10 +104,13 @@ function MarketGallery() {
   },[])
 
   return (
-    <div className = "MarketGallery">
-      {items && items.map((item) => 
-        <MarketItemCard item = {item}/>
-      )}
+    <div>
+      <h2>Market Gallery</h2>
+      <div className = "MarketGallery">
+        {items && items.map((item) => 
+          <MarketItemCard item = {item}/>
+        )}
+      </div>
     </div>
   )
 }
@@ -140,7 +143,8 @@ function MarketItemCard(props) {
   return (
     <div>
       {uri && 
-      <Card style = {{width : "18rem"}}>
+        <Card style = {{width : "18rem", margin : "2rem"}}>
+            <Card.Img src = {uri}/>
             <Card.Body>
               <Card.Text>
                 Item ID : {props.item.itemId}
@@ -287,27 +291,7 @@ function App() {
 
       <ProductPutComponent />
 
-      <button className = "App-button" onClick = {() => fetchURI(1)}>Fetch URI</button>
-      <button className = "App-button" onClick = {setURI}>Set URI</button>
-      <button className = "App-button" onClick = {listItem}>List Item</button>
-      <button className = "App-button" onClick = {buyItem}>Buy Item</button>
-      <button className = "App-button" onClick = {getMarketBalance}>Get Market Balance</button>
-      <button className = "App-button" onClick = {getMarketItems}>Get Market Items</button>
-
       <MarketGallery />
-
-
-      <Card style = {{width : "18rem", margin : "2rem"}}>
-        <Card.Img src = "https://ipfs.io/ipfs/QmPkWbVmXcwRo8UbQsiT748ph7HVw5J4wbo4md831CBtwR"/>
-        <Card.Body>
-          <Card.Text>
-            Hello
-          </Card.Text>
-          <Button>Buy!</Button>
-        </Card.Body>  
-      </Card>      
-
-
 
 
     </div>

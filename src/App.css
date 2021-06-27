@@ -53,11 +53,17 @@
 }
 
 .BuyComponentInput {
-  margin-bottom : 1em;
+  margin : 1em;
   width : 55vw;
 }
 
 .BuyComponentButton {
   margin-bottom : 1em;
   width : 55vw;
+}
+
+.MarketGallery {
+  width : 85vw;
+  display : flex;
+  flex-wrap : wrap;
 }
