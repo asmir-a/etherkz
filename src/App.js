@@ -4,7 +4,7 @@ import {ethers} from "ethers";
 import abi from './abi.json';
 import nftItemABI from './abis/nft_item_abi.json';
 import nftMarketplaceABI from './abis/nft_marketplace_abi.json';
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -76,19 +76,7 @@ function ProductPutComponent() {
 function MarketGallery() {
 
   const [items, setItems] = useState();
-
-  async function getMarketItems() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
-    try {
-      const marketItems = await nftMarketContract.fetchMarketItems();
-      console.log(marketItems);
-      return marketItems;
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const [myItemsSelected, setMyItemsSelected] = useState(false);
 
   function parseMarketItems(arrOuter) {
     let objMarketItems = [];
@@ -98,15 +86,52 @@ function MarketGallery() {
     return objMarketItems;
   }
 
-  useEffect(() => {
-    getMarketItems().then((marketItems) => {
-      setItems(parseMarketItems(marketItems));
+  function parseMyItems(arrOuter) {
+    let objMyItems = [];
+    arrOuter.forEach((arrInner) => {
+      objMyItems.push({itemId : parseInt(arrInner[0]._hex)});
     })
+  }
+
+  async function getMarketItems() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
+    try {
+      const marketItems = await nftMarketContract.fetchMarketItems();
+      setMyItemsSelected(false);
+      setItems(parseMarketItems(marketItems));
+      //return marketItems;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getMyItems() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
+    try {
+      const marketItems = await nftMarketContract.fetchMyNFTs();
+      setMyItemsSelected(true);
+      setItems(parseMarketItems(marketItems));
+      //return marketItems;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  
+
+  useEffect(() => {
+    getMarketItems();
   },[])
 
   return (
     <div>
       <h2>Market Gallery</h2>
+      <Button style = {{margin : "2rem", width : "10vw"}} onClick = {getMyItems}>My Items</Button>
+      <Button style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Selling Items</Button>
       <div className = "MarketGallery">
         {items && items.map((item) => 
           <MarketItemCard item = {item}/>
@@ -119,8 +144,6 @@ function MarketGallery() {
 function MarketItemCard(props) {
   //props should include the item id
   const [uri, setUri] = useState("");
-
-  
 
   async function getURI() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -160,6 +183,47 @@ function MarketItemCard(props) {
                 URI : {uri}
               </Card.Text>
               <Button onClick = {() => {buyButtonHandler(props.item.itemId)}}>Buy!</Button>
+            </Card.Body>
+      </Card>}
+    </div>
+  )
+}
+
+
+function MyItemCard(props) {
+  //props should include the item id
+  const [uri, setUri] = useState("");
+  async function getURI() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const nftItemContract = new ethers.Contract(nftItemAddress, nftItemABI, provider);
+    const uri = await nftItemContract.tokenURI(props.item.itemId);
+    return uri;
+  }
+
+  useEffect(() => {
+    getURI().then(fetchedUri => setUri(fetchedUri));
+  }, [])
+
+  async function buyButtonHandler(itemId) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
+    const transactionBuyProduct = await nftMarketContract.createMarketSale(nftItemAddress, itemId, {value : "5000000000000000000"});
+    await transactionBuyProduct.wait();
+  }
+
+  return (
+    <div>
+      {uri && 
+        <Card style = {{width : "18rem", margin : "2rem"}}>
+            <Card.Img src = {uri}/>
+            <Card.Body>
+              <Card.Text>
+                Item ID : {props.item.itemId}
+              </Card.Text>
+              <Card.Text>
+                URI : {uri}
+              </Card.Text>
             </Card.Body>
       </Card>}
     </div>
