@@ -99,36 +99,14 @@ function MarketGallery() {
 
   useEffect(() => {
     getMarketItems().then((marketItems) => {
-      console.log(parseMarketItems(marketItems));
       setItems(parseMarketItems(marketItems));
     })
   },[])
 
-  async function buyButtonHandler(itemId) {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
-    const transactionBuyProduct = await nftMarketContract.createMarketSale(nftItemAddress, itemId, {value : "5000000000000000000"});
-    await transactionBuyProduct.wait();
-  }
-
   return (
     <div className = "MarketGallery">
       {items && items.map((item) => 
-        <Card style = {{width : "18rem"}}>
-          <Card.Body>
-            <Card.Text>
-              Item ID : {item.itemId}
-            </Card.Text>
-            <Card.Text>
-              Price : {item.price} wei
-            </Card.Text>
-            <Card.Text>
-              Seller : {item.seller}
-            </Card.Text>
-            <Button onClick = {() => {buyButtonHandler(item.itemId)}}>Buy!</Button>
-          </Card.Body>
-        </Card>
+        <MarketItemCard item = {item}/>
       )}
     </div>
   )
@@ -143,19 +121,42 @@ function MarketItemCard(props) {
   async function getURI() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const nftItemContract = new ethers.Contract(nftItemAddress, nftItemABI, provider);
-    const uri = await nftItemContract.tokenURI(props.id);
+    const uri = await nftItemContract.tokenURI(props.item.itemId);
     return uri;
   }
 
   useEffect(() => {
     getURI().then(fetchedUri => setUri(fetchedUri));
-
   }, [])
+
+  async function buyButtonHandler(itemId) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
+    const transactionBuyProduct = await nftMarketContract.createMarketSale(nftItemAddress, itemId, {value : "5000000000000000000"});
+    await transactionBuyProduct.wait();
+  }
 
   return (
     <div>
-      {uri && <div>{uri}</div>}
-      <button>Buy</button>
+      {uri && 
+      <Card style = {{width : "18rem"}}>
+            <Card.Body>
+              <Card.Text>
+                Item ID : {props.item.itemId}
+              </Card.Text>
+              <Card.Text>
+                Price : {props.item.price} wei
+              </Card.Text>
+              <Card.Text>
+                Seller : {props.item.seller}
+              </Card.Text>
+              <Card.Text>
+                URI : {uri}
+              </Card.Text>
+              <Button onClick = {() => {buyButtonHandler(props.item.itemId)}}>Buy!</Button>
+            </Card.Body>
+      </Card>}
     </div>
   )
 }
