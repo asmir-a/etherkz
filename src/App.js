@@ -4,7 +4,10 @@ import {ethers} from "ethers";
 import abi from './abi.json';
 import nftItemABI from './abis/nft_item_abi.json';
 import nftMarketplaceABI from './abis/nft_marketplace_abi.json';
+import { Card, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+
 
 
 let contractAddress = "0xb6c1c796A580525Af7Ad4474A34a63debE80221c";
@@ -86,15 +89,47 @@ function MarketGallery() {
     }
   }
 
+  function parseMarketItems(arrOuter) {
+    let objMarketItems = [];
+    arrOuter.forEach((arrInner) => {
+      objMarketItems.push({itemId : parseInt(arrInner[0]._hex), price : parseInt(arrInner[5]._hex), seller : arrInner[3]});
+    })
+    return objMarketItems;
+  }
+
   useEffect(() => {
     getMarketItems().then((marketItems) => {
-
+      console.log(parseMarketItems(marketItems));
+      setItems(parseMarketItems(marketItems));
     })
   },[])
 
+  async function buyButtonHandler(itemId) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const nftMarketContract = new ethers.Contract(nftMarketplaceAddress, nftMarketplaceABI, signer);
+    const transactionBuyProduct = await nftMarketContract.createMarketSale(nftItemAddress, itemId, {value : "5000000000000000000"});
+    await transactionBuyProduct.wait();
+  }
+
   return (
     <div className = "MarketGallery">
-
+      {items && items.map((item) => 
+        <Card style = {{width : "18rem"}}>
+          <Card.Body>
+            <Card.Text>
+              Item ID : {item.itemId}
+            </Card.Text>
+            <Card.Text>
+              Price : {item.price} wei
+            </Card.Text>
+            <Card.Text>
+              Seller : {item.seller}
+            </Card.Text>
+            <Button onClick = {() => {buyButtonHandler(item.itemId)}}>Buy!</Button>
+          </Card.Body>
+        </Card>
+      )}
     </div>
   )
 }
@@ -235,7 +270,10 @@ function App() {
   return (
     <div className="App">
       <header className = "App-header">
+        <h3>Your Account Address: </h3>
         {account && <div>{account.account}</div>}
+        <h3>Your Account Balance: </h3>
+        {account && <div>{account.balance}</div>}
       </header>
       
       {/* <MarketItemCard /> */}
@@ -254,6 +292,22 @@ function App() {
       <button className = "App-button" onClick = {buyItem}>Buy Item</button>
       <button className = "App-button" onClick = {getMarketBalance}>Get Market Balance</button>
       <button className = "App-button" onClick = {getMarketItems}>Get Market Items</button>
+
+      <MarketGallery />
+
+
+      <Card style = {{width : "18rem", margin : "2rem"}}>
+        <Card.Img src = "https://ipfs.io/ipfs/QmPkWbVmXcwRo8UbQsiT748ph7HVw5J4wbo4md831CBtwR"/>
+        <Card.Body>
+          <Card.Text>
+            Hello
+          </Card.Text>
+          <Button>Buy!</Button>
+        </Card.Body>  
+      </Card>      
+
+
+
 
     </div>
   );
