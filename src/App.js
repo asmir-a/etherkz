@@ -29,7 +29,7 @@ function ProductPutComponent() {
     const itemContract = new ethers.Contract(nftItemAddress, nftItemABI, signer);
     let transactionCreateToken = await itemContract.createToken(uri);
     setUriValue("");
-    setPrice("");
+    setPrice("5000000000000000000");
     let transactionResult = await transactionCreateToken.wait();
     console.log("Transaction: TokenID: ", parseInt(transactionResult.events[0].args[2]._hex, 16));
     return parseInt(transactionResult.events[0].args[2]._hex, 16);
@@ -80,9 +80,9 @@ function MarketGallery() {
   function parseMarketItems(arrOuter) {
     let objMarketItems = [];
     arrOuter.forEach((arrInner) => {
-      objMarketItems.push({itemId : parseInt(arrInner[0]._hex), price : parseInt(arrInner[5]._hex), seller : arrInner[3]});
+      objMarketItems.push({itemId : parseInt(arrInner[0]._hex), price : parseInt(arrInner[5]._hex), seller : arrInner[3], tokenId : parseInt(arrInner[2]._hex, 16)});
     })
-    return objMarketItems;
+    return objMarketItems.reverse();
   }
 
   function parseMyItems(arrOuter) {
@@ -99,6 +99,7 @@ function MarketGallery() {
     try {
       const marketItems = await nftMarketContract.fetchMarketItems();
       setMyItemsSelected(false);
+      console.log(marketItems);
       setItems(parseMarketItems(marketItems));
       //return marketItems;
     } catch (error) {
@@ -147,7 +148,7 @@ function MarketItemCard(props) {
   async function getURI() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const nftItemContract = new ethers.Contract(nftItemAddress, nftItemABI, provider);
-    const uri = await nftItemContract.tokenURI(props.item.itemId);
+    const uri = await nftItemContract.tokenURI(props.item.tokenId);
     return uri;
   }
 
@@ -257,7 +258,7 @@ function App() {
         <h3>Адресс Вашего Аккаунта: </h3>
         {account && <div>{account.account}</div>}
         <h3>Баланс На Вашем Аккаунте: </h3>
-        {account && <div>{account.balance}</div>}
+        {account && <div>{account.balance} ETH</div>}
       </header>
       <ProductPutComponent />
       <MarketGallery />
