@@ -133,7 +133,7 @@ function MarketGallery() {
       <Button style = {{margin : "2rem", width : "10vw"}} onClick = {getMarketItems}>Selling Items</Button>
       <div className = "MarketGallery">
         {items && items.map((item) => 
-          <MarketItemCard item = {item}/>
+          myItemsSelected ? <MyItemCard item = {item}/> : <MarketItemCard item = {item}/>
         )}
       </div>
     </div>
